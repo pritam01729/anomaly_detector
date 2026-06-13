@@ -1,0 +1,26 @@
+CC      = gcc
+CFLAGS  = -Wall -Wextra -g
+SRCS    = src/main.c src/collector.c src/detector.c src/utils.c
+TARGET  = anomaly_detector
+
+SIM_HOG = simulate/memory_hog
+SIM_ZOM = simulate/zombie
+
+# ── Main target ───────────────────────────────────────────────────────────────
+$(TARGET): $(SRCS) src/collector.h src/detector.h src/utils.h
+	$(CC) $(CFLAGS) -o $(TARGET) $(SRCS) -lm
+
+# ── Simulation helpers ────────────────────────────────────────────────────────
+sim: $(SIM_HOG) $(SIM_ZOM)
+
+$(SIM_HOG): simulate/memory_hog.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+$(SIM_ZOM): simulate/zombie.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+# ── Utility targets ───────────────────────────────────────────────────────────
+clean:
+	rm -f $(TARGET) $(SIM_HOG) $(SIM_ZOM) anomalies.log
+
+.PHONY: sim clean
